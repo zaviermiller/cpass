@@ -141,6 +141,10 @@ void CopyPropagation::localCopyPropagation( Function &F )
     {
         errs() << "post local" << "\n" << (*(&F)) << "\n";
     }
+    
+    for (BasicBlock &bb : F) {
+      
+    }
 }
 
 /*
@@ -180,6 +184,12 @@ void CopyPropagation::globalCopyPropagation( Function &F )
  */
 void DataFlowAnalysis::addCopy(Value* v)
 {
+  if (copy_idx.find(v) == copy_idx.end()) {
+    int idx = nr_copies++;
+    copy_idx[v] = idx;
+    idx_copy[idx] = v;
+    copies.push_back(v);
+  }
 }
 
 /* 
@@ -203,6 +213,10 @@ void DataFlowAnalysis::addCopy(Value* v)
  */
 void DataFlowAnalysis::initCopyIdxs(Function &F)
 {
+  // add copy for all function args
+  for(auto ai = F.arg_begin(); ai != F.arg_end(); ai++) {
+    addCopy(&(*ai));
+  }
 }
 
 /*
