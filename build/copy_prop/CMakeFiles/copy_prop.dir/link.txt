@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g -shared  -o libcopy_prop.so CMakeFiles/copy_prop.dir/copy_prop.cpp.o 
