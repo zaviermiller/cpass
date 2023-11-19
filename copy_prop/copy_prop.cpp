@@ -217,6 +217,15 @@ void DataFlowAnalysis::initCopyIdxs(Function &F)
   for(auto ai = F.arg_begin(); ai != F.arg_end(); ai++) {
     addCopy(&(*ai));
   }
+
+  // iterate over all instructions and add copy for each store inst
+  for (BasicBlock &bb : F) {
+    for (Instruction &i : bb) {
+      if (isa<StoreInst>(&i)) {
+        addCopy(&i);
+      }
+    }
+  }
 }
 
 /*
