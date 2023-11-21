@@ -125,6 +125,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     if (isa<StoreInst>(iptr)) {
       errs() << "store instruction: ";
       ins.print(errs());
+      errs() << "\n";
     }
   }
 }
