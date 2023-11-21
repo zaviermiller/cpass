@@ -119,6 +119,14 @@ cl::opt<bool> CopyPropagation::verbose( "verbose", cl::desc( "turn on verbose pr
  */
 void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 {
+  Instruction *iptr;
+  for (Instruction &ins : bb) {
+    iptr = &ins;
+    if (isa<StoreInst>(iptr)) {
+      errs() << "store instruction: ";
+      ins.print(errs());
+    }
+  }
 }
 
 /*
@@ -137,13 +145,16 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
  */
 void CopyPropagation::localCopyPropagation( Function &F )
 {
+    ACPTable acp;
+    
+    // debug
     if (verbose)
     {
         errs() << "post local" << "\n" << (*(&F)) << "\n";
     }
-    
+
     for (BasicBlock &bb : F) {
-      
+      propagateCopies(bb, acp);  
     }
 }
 
