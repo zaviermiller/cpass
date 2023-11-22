@@ -176,7 +176,6 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         ins.print(errs());
         errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
         ins.eraseFromParent();
-        break;
       }
     }
   }
