@@ -174,7 +174,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     if (isa<LoadInst>(iptr)) {
       i++;
       Value *src = ins.getOperand(0);
-      if (acp.find(src) != acp.end() && i < 1) {
+      if (acp.find(src) != acp.end() && i < 2) {
         ins.print(errs());
         errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
         ins.eraseFromParent();
