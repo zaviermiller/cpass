@@ -157,6 +157,13 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         // otherwise just store the src
         acp[(Value *)iptr] = src;
       }
+    } else {
+      for (i = 0; i < ins.getNumOperands(); i++) {
+        Value *op = ins.getOperand(i);
+        if (acp.find(op) != acp.end()) {
+          ins.setOperand(i, acp[op]);
+        }
+      }
     }
   }
 
