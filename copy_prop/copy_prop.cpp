@@ -130,6 +130,12 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       Value *src = ins.getOperand(0);
       ins.print(errs());
       errs() << " src: " << src << " dest: " << dest << "\n";
+      for (i = 0; i < ins.getNumOperands(); i++) {
+        Value *op = ins.getOperand(i);
+        if (acp.find(op) != acp.end()) {
+          ins.setOperand(i, acp[op]);
+        }
+      }
 
       if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
@@ -140,6 +146,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     } else if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
+      ins.print(errs());
+      errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
       if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
         // acp[(Value *)iptr] = acp[src];
@@ -148,14 +156,6 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       } else {
         // otherwise just store the src
         acp[(Value *)iptr] = src;
-      }
-      ins.print(errs());
-      errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
-    }
-    for (i = 0; i < ins.getNumOperands(); i++) {
-      Value *op = ins.getOperand(i);
-      if (acp.find(op) != acp.end()) {
-        ins.setOperand(i, acp[op]);
       }
     }
   }
