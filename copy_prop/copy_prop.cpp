@@ -145,7 +145,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     } else if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
-      if (dyn_cast<ConstantInt>(src)) {
+      if ((dyn_cast<ConstantInt>(src))) {
         ins.eraseFromParent();
       } else if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
