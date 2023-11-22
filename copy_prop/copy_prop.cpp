@@ -169,6 +169,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     }
   }
   for (Instruction &ins : bb) {
+    break;
     iptr = &ins;
     if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
