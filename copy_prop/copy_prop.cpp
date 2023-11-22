@@ -150,9 +150,9 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
       if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
-        // acp[(Value *)iptr] = acp[src];
+        acp[(Value *)iptr] = acp[src];
         // remove instruction
-        ins.eraseFromParent();
+        //ins.eraseFromParent();
       } else {
         // otherwise just store the src
         acp[(Value *)iptr] = src;
