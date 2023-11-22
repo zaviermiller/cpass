@@ -142,6 +142,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
         acp[dest] = acp[src];
+      } else if (acp.find(dest) != acp.end()) {
+        acp.erase(dest);
       } else {
         // otherwise just store the src
         acp[dest] = src;
@@ -168,24 +170,19 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     }
   }
-  i = 0;
+
+  // go through and remove all loads
   for (auto it = bb.begin(); it != bb.end();) {
     Instruction &ins = *it;
     ++it;  // Advance iterator before potentially erasing 'ins'
 
     if (isa<LoadInst>(ins)) {
-        i++;
-        Value *src = ins.getOperand(0);
-        if (acp.find(src) != acp.end()) {
-            ins.eraseFromParent();
-        }
+      Value *src = ins.getOperand(0);
+      if (acp.find(src) != acp.end()) {
+        ins.eraseFromParent();
+      }
     }
   }
-
-  // print out acp at end
-  // for (auto it = acp.begin(); it != acp.end(); it++) {
-  //   errs() << it->first << " : " << it->second << "\n";
-  // }
 }
 
 /*
