@@ -124,7 +124,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     iptr = &ins;
     if (isa<StoreInst>(iptr)) {
       ins.print(errs());
-      errs() << ins.getNumOperands() << "\n";
+      errs() << " " << ins.getOperand(0) << " " << ins.getOperand(1) << "\n";
     }
   }
 }
