@@ -204,15 +204,15 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 void CopyPropagation::localCopyPropagation( Function &F )
 {
     ACPTable acp;
+
+    for (BasicBlock &bb : F) {
+      propagateCopies(bb, acp);  
+    }
     
     // debug
     if (verbose)
     {
         errs() << "post local" << "\n" << (*(&F)) << "\n";
-    }
-
-    for (BasicBlock &bb : F) {
-      propagateCopies(bb, acp);  
     }
 }
 
