@@ -169,16 +169,16 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     }
   }
   i = 0;
-  for (Instruction &ins : bb) {
-    iptr = &ins;
-    if (isa<LoadInst>(iptr)) {
-      i++;
-      Value *src = ins.getOperand(0);
-      if (acp.find(src) != acp.end()) {
-        // iptr->print(errs());
-        // errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
-        iptr->eraseFromParent();
-      }
+  for (auto it = bb.begin(); it != bb.end();) {
+    Instruction &ins = *it;
+    ++it;  // Advance iterator before potentially erasing 'ins'
+
+    if (isa<LoadInst>(ins)) {
+        i++;
+        Value *src = ins.getOperand(0);
+        if (acp.find(src) != acp.end()) {
+            ins.eraseFromParent();
+        }
     }
   }
 
