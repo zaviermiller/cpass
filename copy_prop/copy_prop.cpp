@@ -122,10 +122,24 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
   Instruction *iptr;
   for (Instruction &ins : bb) {
     iptr = &ins;
+    // add store instructions to the ACP table
     if (isa<StoreInst>(iptr)) {
-      ins.print(errs());
-      errs() << " " << ins.getOperand(0) << " " << ins.getOperand(1) << "\n";
+      Value *dest = ins.getOperand(1);
+      Value *src = ins.getOperand(0);
+
+      if (acp.find(src) != acp.end()) {
+        // if src is in acp as a dest, store the src of that dest
+        acp[dest] = acp[src];
+      } else {
+        // otherwise just store the src
+        acp[dest] = src;
+      }
     }
+  }
+
+  // print out acp at end
+  for (auto it = acp.begin(); it != acp.end(); it++) {
+    errs() << it->first << " : " << it->second << "\n";
   }
 }
 
