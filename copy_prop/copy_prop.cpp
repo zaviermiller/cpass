@@ -125,8 +125,12 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 
   for (Instruction &ins : bb) {
     iptr = &ins;
+
+    if (iptr == nullptr) {
+      continue;
+    }
     // add store instructions to the ACP table
-    if (iptr != nullptr && isa<StoreInst>(iptr)) {
+    if (isa<StoreInst>(iptr)) {
       Value *dest = ins.getOperand(1);
       Value *src = ins.getOperand(0);
       ins.print(errs());
@@ -145,7 +149,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         // otherwise just store the src
         acp[dest] = src;
       }
-    } else if (iptr != nullptr && isa<LoadInst>(iptr)) {
+    } else if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
       ins.print(errs());
       errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
