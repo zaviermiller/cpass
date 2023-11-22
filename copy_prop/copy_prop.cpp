@@ -150,12 +150,12 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
     }
   
-    // for (i = 0; i < ins.getNumOperands(); i++) {
-    //   Value *op = ins.getOperand(i);
-    //   if (acp.find(op) != acp.end()) {
-    //     ins.setOperand(i, acp[op]);
-    //   }
-    // }
+    for (i = 0; i < ins.getNumOperands(); i++) {
+      Value *op = ins.getOperand(i);
+      if (acp.find(op) != acp.end()) {
+        ins.setOperand(i, acp[op]);
+      }
+    }
 
   }
 
