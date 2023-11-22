@@ -120,6 +120,7 @@ cl::opt<bool> CopyPropagation::verbose( "verbose", cl::desc( "turn on verbose pr
 void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 {
   Instruction *iptr;
+  int i;
   for (Instruction &ins : bb) {
     iptr = &ins;
     // add store instructions to the ACP table
@@ -142,6 +143,14 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       ins.print(errs());
       errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
     }
+  
+    for (i = 0; i < ins.getNumOperands(); i++) {
+      Value *op = ins.getOperand(i);
+      if (acp.find(op) != acp.end()) {
+        ins.setOperand(i, acp[op]);
+      }
+    }
+
   }
 
   // print out acp at end
