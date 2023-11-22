@@ -121,6 +121,7 @@ cl::opt<bool> CopyPropagation::verbose( "verbose", cl::desc( "turn on verbose pr
 void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 {
   Instruction *iptr;
+  map<Value *, int>used_loads;
   int i;
 
   for (Instruction &ins : bb) {
@@ -168,16 +169,17 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     }
   }
-  for (Instruction &ins : bb) {
-    break;
-    iptr = &ins;
+
+  for (auto rit = bb.rbegin(), rend = bb.rend(); rit != rend; ++rit) {
+    iptr = &*rit;
+    for(i = 0; i < iptr->getNumOperands(); i++) {
+      Value *op = iptr->getOperand(i);
+      used_loads[op] = 1;
+    }
     if (isa<LoadInst>(iptr)) {
-      Value *src = ins.getOperand(0);
-      if (acp.find(src) != acp.end()) {
-        ins.print(errs());
-        errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
-        ins.eraseFromParent();
-        break;
+      Value *src = iptr->getOperand(0);
+      if (acp.find(src) != acp.end() && used_loads.find(src) != used_loads.end()) {
+        iptr->eraseFromParent();
       }
     }
   }
