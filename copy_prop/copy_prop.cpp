@@ -134,6 +134,9 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         // otherwise just store the src
         acp[dest] = src;
       }
+    } else if (isa<LoadInst>(iptr)) {
+      Value *src = ins.getOperand(0);
+      acp[(Value *)iptr] = src;
     }
   }
 
