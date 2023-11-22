@@ -123,6 +123,12 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
   int i;
   for (Instruction &ins : bb) {
     iptr = &ins;
+    for (i = 0; i < ins.getNumOperands(); i++) {
+      Value *op = ins.getOperand(i);
+      if (acp.find(op) != acp.end()) {
+        ins.setOperand(i, acp[op]);
+      }
+    }
     // add store instructions to the ACP table
     if (isa<StoreInst>(iptr)) {
       Value *dest = ins.getOperand(1);
@@ -149,14 +155,6 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       ins.print(errs());
       errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
     }
-  
-    for (i = 0; i < ins.getNumOperands(); i++) {
-      Value *op = ins.getOperand(i);
-      if (acp.find(op) != acp.end()) {
-        ins.setOperand(i, acp[op]);
-      }
-    }
-
   }
 
   // print out acp at end
