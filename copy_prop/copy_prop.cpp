@@ -123,9 +123,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
   for (Instruction &ins : bb) {
     iptr = &ins;
     if (isa<StoreInst>(iptr)) {
-      errs() << "store instruction: ";
       ins.print(errs());
-      errs() << "\n";
+      errs() << ins.getNumOperands() << "\n";
     }
   }
 }
