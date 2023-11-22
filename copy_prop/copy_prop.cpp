@@ -6,6 +6,7 @@
 #include "llvm/Support/CommandLine.h"
 
 #include <llvm/Support/Casting.h>
+#include <llvm/IR/ConstInt.h>
 #include <map>
 #include <vector>
 #include <string>
