@@ -5,6 +5,7 @@
 #include "llvm/Support/Format.h"
 #include "llvm/Support/CommandLine.h"
 
+#include <llvm/Support/Casting.h>
 #include <map>
 #include <vector>
 #include <string>
@@ -145,7 +146,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     } else if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
-      if ((dyn_cast<ConstantInt>(src))) {
+      ConstantInt *ci = dyn_cast<ConstantInt>(src);
+      if (ci != nullptr) {
         ins.eraseFromParent();
       } else if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
