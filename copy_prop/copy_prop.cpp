@@ -168,11 +168,20 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     }
   }
+  for (Instruction &ins : bb) {
+    iptr = &ins;
+    if (isa<LoadInst>(iptr)) {
+      Value *src = ins.getOperand(0);
+      if (acp.find(src) != acp.end()) {
+        ins.eraseFromParent();
+      }
+    }
+  }
 
   // print out acp at end
-  for (auto it = acp.begin(); it != acp.end(); it++) {
-    errs() << it->first << " : " << it->second << "\n";
-  }
+  // for (auto it = acp.begin(); it != acp.end(); it++) {
+  //   errs() << it->first << " : " << it->second << "\n";
+  // }
 }
 
 /*
