@@ -6,7 +6,6 @@
 #include "llvm/Support/CommandLine.h"
 
 #include <llvm/Support/Casting.h>
-#include <llvm/IR/ConstInt.h>
 #include <map>
 #include <vector>
 #include <string>
@@ -147,11 +146,11 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       }
     } else if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
-      if (isa<ConstantInt>(src)) {
-        ins.eraseFromParent();
-      } else if (acp.find(src) != acp.end()) {
+      if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
-        acp[(Value *)iptr] = acp[src];
+        // acp[(Value *)iptr] = acp[src];
+        // remove instruction
+        ins.eraseFromParent();
       } else {
         // otherwise just store the src
         acp[(Value *)iptr] = src;
