@@ -126,6 +126,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     if (isa<StoreInst>(iptr)) {
       Value *dest = ins.getOperand(1);
       Value *src = ins.getOperand(0);
+      ins.print(errs());
+      errs() << " src: " << src << " dest: " << dest << "\n";
 
       if (acp.find(src) != acp.end()) {
         // if src is in acp as a dest, store the src of that dest
@@ -137,6 +139,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     } else if (isa<LoadInst>(iptr)) {
       Value *src = ins.getOperand(0);
       acp[(Value *)iptr] = src;
+      ins.print(errs());
+      errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
     }
   }
 
