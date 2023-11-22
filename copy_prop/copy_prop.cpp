@@ -178,7 +178,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 
     if (isa<LoadInst>(ins)) {
       Value *src = ins.getOperand(0);
-      if (acp.find(src) != acp.end()) {
+      if (acp.find(src) != acp.end() && src->use_empty()) {
         ins.eraseFromParent();
       }
     }
