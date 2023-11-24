@@ -145,9 +145,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       Value *dest, *src;
       dest = (Value *) iptr;
       src = ins.getOperand(0);
-      if (acp.find(dest) != acp.end()) {
-        acp.erase(dest);
-      } else if (acp.find(src) != acp.end()) {
+      if (acp.find(src) != acp.end()) {
         acp[dest] = acp[src];
       } else {
         acp[dest] = src;
