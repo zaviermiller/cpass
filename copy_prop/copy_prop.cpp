@@ -127,14 +127,14 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     iptr = &ins;
 
     // replace operands that are copies if in acp table (unless its a load)
-    if (isa<LoadInst>(iptr)) {
-      continue;
-    }
 
-    for (i = 0; i < ins.getNumOperands(); i++) {
-      Value *op = ins.getOperand(i);
-      if (acp.find(op) != acp.end()) {
-        ins.setOperand(i, acp[op]);
+
+    if (!isa<LoadInst>(iptr)) {
+      for (i = 0; i < ins.getNumOperands(); i++) {
+        Value *op = ins.getOperand(i);
+        if (acp.find(op) != acp.end()) {
+          ins.setOperand(i, acp[op]);
+        }
       }
     }
 
