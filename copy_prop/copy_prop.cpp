@@ -126,49 +126,71 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
   for (Instruction &ins : bb) {
     iptr = &ins;
 
-    // add store instructions to the ACP table
-    if (isa<StoreInst>(iptr)) {
-      Value *dest = ins.getOperand(1);
-      Value *src = ins.getOperand(0);
-      // ins.print(errs());
-      // errs() << " src: " << src << " dest: " << dest << "\n";
-      for (i = 0; i < ins.getNumOperands(); i++) {
-        Value *op = ins.getOperand(i);
-        if (acp.find(op) != acp.end()) {
-          ins.setOperand(i, acp[op]);
-        }
-      }
-
-      if (acp.find(src) != acp.end()) {
-        // if src is in acp as a dest, store the src of that dest
-        acp[dest] = acp[src];
-      } else if (acp.find(dest) != acp.end()) {
-        acp.erase(dest);
-      } else {
-        // otherwise just store the src
-        acp[dest] = src;
-      }
-    } else if (isa<LoadInst>(iptr)) {
-      Value *src = ins.getOperand(0);
-      // ins.print(errs());
-      // errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
-      if (acp.find(src) != acp.end()) {
-        // if src is in acp as a dest, store the src of that dest
-        acp[(Value *)iptr] = acp[src];
-        // remove instruction
-        // ins.eraseFromParent();
-      } else {
-        // otherwise just store the src
-        acp[(Value *)iptr] = src;
-      }
-    } else {
-      for (i = 0; i < ins.getNumOperands(); i++) {
-        Value *op = ins.getOperand(i);
-        if (acp.find(op) != acp.end()) {
-          ins.setOperand(i, acp[op]);
-        }
+    // replace operands that are copies if in acp table
+    for (i = 0; i < ins.getNumOperands(); i++) {
+      Value *op = ins.getOperand(i);
+      if (acp.find(op) != acp.end()) {
+        ins.setOperand(i, acp[op]);
       }
     }
+
+    if (isa<StoreInst>(iptr)) {
+      Value *dest, *src;
+      dest = ins.getOperand(1);
+      src = ins.getOperand(0);
+      // delete acp entry if it is invalidated
+      if (acp.find(dest) != acp.end()) {
+        acp.erase(dest);
+      } else if (acp.find(src) != acp.end()) {
+        acp[dest] = acp[src];
+      } else {
+        acp[dest] = src;
+      }
+    }
+
+    // add store instructions to the ACP table
+    // if (isa<StoreInst>(iptr)) {
+    //   Value *dest = ins.getOperand(1);
+    //   Value *src = ins.getOperand(0);
+    //   // ins.print(errs());
+    //   // errs() << " src: " << src << " dest: " << dest << "\n";
+    //   for (i = 0; i < ins.getNumOperands(); i++) {
+    //     Value *op = ins.getOperand(i);
+    //     if (acp.find(op) != acp.end()) {
+    //       ins.setOperand(i, acp[op]);
+    //     }
+    //   }
+
+    //   if (acp.find(src) != acp.end()) {
+    //     // if src is in acp as a dest, store the src of that dest
+    //     acp[dest] = acp[src];
+    //   } else if (acp.find(dest) != acp.end()) {
+    //     acp.erase(dest);
+    //   } else {
+    //     // otherwise just store the src
+    //     acp[dest] = src;
+    //   }
+    // } else if (isa<LoadInst>(iptr)) {
+    //   Value *src = ins.getOperand(0);
+    //   // ins.print(errs());
+    //   // errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
+    //   if (acp.find(src) != acp.end()) {
+    //     // if src is in acp as a dest, store the src of that dest
+    //     acp[(Value *)iptr] = acp[src];
+    //     // remove instruction
+    //     // ins.eraseFromParent();
+    //   } else {
+    //     // otherwise just store the src
+    //     acp[(Value *)iptr] = src;
+    //   }
+    // } else {
+    //   for (i = 0; i < ins.getNumOperands(); i++) {
+    //     Value *op = ins.getOperand(i);
+    //     if (acp.find(op) != acp.end()) {
+    //       ins.setOperand(i, acp[op]);
+    //     }
+    //   }
+    // }
   }
 
   // go through and remove all loads
