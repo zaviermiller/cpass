@@ -126,17 +126,6 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
   for (Instruction &ins : bb) {
     iptr = &ins;
 
-    // replace operands that are copies if in acp table (unless its a load)
-
-
-    if (!isa<LoadInst>(iptr)) {
-      for (i = 0; i < ins.getNumOperands(); i++) {
-        Value *op = ins.getOperand(i);
-        if (acp.find(op) != acp.end()) {
-          ins.setOperand(i, acp[op]);
-        }
-      }
-    }
 
     if (isa<StoreInst>(iptr)) {
       Value *dest, *src;
@@ -147,6 +136,8 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         acp.erase(dest);
       } else if (acp.find(src) != acp.end()) {
         acp[dest] = acp[src];
+        // replace source with acp[src]
+        ins.setOperand(0, acp[src]);
       } else {
         acp[dest] = src;
       }
@@ -160,6 +151,14 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         acp[dest] = acp[src];
       } else {
         acp[dest] = src;
+      }
+    } else {
+    // replace operands that are copies if in acp table (unless its a load)
+      for (i = 0; i < ins.getNumOperands(); i++) {
+        Value *op = ins.getOperand(i);
+        if (acp.find(op) != acp.end()) {
+          ins.setOperand(i, acp[op]);
+        }
       }
     }
 
