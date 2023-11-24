@@ -150,6 +150,17 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       } else {
         acp[dest] = src;
       }
+    } else if (isa<LoadInst>(iptr)) {
+      Value *dest, *src;
+      dest = (Value *) iptr;
+      src = ins.getOperand(0);
+      if (acp.find(dest) != acp.end()) {
+        acp.erase(dest);
+      } else if (acp.find(src) != acp.end()) {
+        acp[dest] = acp[src];
+      } else {
+        acp[dest] = src;
+      }
     }
 
     // add store instructions to the ACP table
