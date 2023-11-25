@@ -160,7 +160,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 
 
   for (Instruction *i : to_remove) {
-    i->removeFromParent();
+    //i->removeFromParent();
   }
 
 }
