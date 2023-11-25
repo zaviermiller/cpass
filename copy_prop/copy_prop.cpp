@@ -208,8 +208,12 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
     ++it;  // Advance iterator before potentially erasing 'ins'
 
     if (isa<LoadInst>(ins)) {
-      Value *src = ins.getOperand(0);
-      if (acp.find(src) != acp.end() && src->use_empty()) {
+      // Value *src = ins.getOperand(0);
+      // if (acp.find(src) != acp.end() && src->use_empty()) {
+      //   ins.eraseFromParent();
+      // }
+      
+      if (ins.use_empty()) {
         ins.eraseFromParent();
       }
     }
