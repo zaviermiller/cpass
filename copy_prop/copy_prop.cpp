@@ -156,72 +156,13 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
         }
       }
     }
-
-    for (Instruction *i : to_remove) {
-      i->removeFromParent();
-    }
-
-    // add store instructions to the ACP table
-    // if (isa<StoreInst>(iptr)) {
-    //   Value *dest = ins.getOperand(1);
-    //   Value *src = ins.getOperand(0);
-    //   // ins.print(errs());
-    //   // errs() << " src: " << src << " dest: " << dest << "\n";
-    //   for (i = 0; i < ins.getNumOperands(); i++) {
-    //     Value *op = ins.getOperand(i);
-    //     if (acp.find(op) != acp.end()) {
-    //       ins.setOperand(i, acp[op]);
-    //     }
-    //   }
-
-    //   if (acp.find(src) != acp.end()) {
-    //     // if src is in acp as a dest, store the src of that dest
-    //     acp[dest] = acp[src];
-    //   } else if (acp.find(dest) != acp.end()) {
-    //     acp.erase(dest);
-    //   } else {
-    //     // otherwise just store the src
-    //     acp[dest] = src;
-    //   }
-    // } else if (isa<LoadInst>(iptr)) {
-    //   Value *src = ins.getOperand(0);
-    //   // ins.print(errs());
-    //   // errs() << " src: " << src << " dest: " << (Value*)iptr << "\n";
-    //   if (acp.find(src) != acp.end()) {
-    //     // if src is in acp as a dest, store the src of that dest
-    //     acp[(Value *)iptr] = acp[src];
-    //     // remove instruction
-    //     // ins.eraseFromParent();
-    //   } else {
-    //     // otherwise just store the src
-    //     acp[(Value *)iptr] = src;
-    //   }
-    // } else {
-    //   for (i = 0; i < ins.getNumOperands(); i++) {
-    //     Value *op = ins.getOperand(i);
-    //     if (acp.find(op) != acp.end()) {
-    //       ins.setOperand(i, acp[op]);
-    //     }
-    //   }
-    // }
   }
 
-  // go through and remove all loads
-  // for (auto it = bb.begin(); it != bb.end();) {
-  //   Instruction &ins = *it;
-  //   ++it;  // Advance iterator before potentially erasing 'ins'
 
-  //   if (isa<LoadInst>(ins)) {
-  //     // Value *src = ins.getOperand(0);
-  //     // if (acp.find(src) != acp.end() && src->use_empty()) {
-  //     //   ins.eraseFromParent();
-  //     // }
-  //     
-  //     if (ins.use_empty()) {
-  //       ins.eraseFromParent();
-  //     }
-  //   }
-  // }
+  for (Instruction *i : to_remove) {
+    i->removeFromParent();
+  }
+
 }
 
 /*
