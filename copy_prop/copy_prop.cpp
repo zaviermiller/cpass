@@ -120,6 +120,7 @@ cl::opt<bool> CopyPropagation::verbose( "verbose", cl::desc( "turn on verbose pr
  */
 void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
 {
+  vector<Instruction *>to_remove;
   Instruction *iptr;
   int i;
 
@@ -144,7 +145,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       src = ins.getOperand(0);
       if (acp.find(src) != acp.end()) {
         acp[dest] = acp[src];
-        ins.removeFromParent();
+        to_remove.push_back(iptr);
       }
     } else {
     // replace operands that are copies if in acp table (unless its a load)
@@ -154,6 +155,10 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
           ins.setOperand(i, acp[op]);
         }
       }
+    }
+
+    for (Instruction *i : to_remove) {
+      i->removeFromParent();
     }
 
     // add store instructions to the ACP table
