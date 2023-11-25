@@ -53,7 +53,7 @@ class CopyPropagation : public FunctionPass
     bool runOnFunction( Function &F ) override
     {
         localCopyPropagation( F );
-        //globalCopyPropagation( F );
+        globalCopyPropagation( F );
         return true;
     }
 }; // end CopyPropagation
