@@ -131,10 +131,7 @@ void CopyPropagation::propagateCopies(BasicBlock &bb, ACPTable &acp)
       Value *dest, *src;
       dest = ins.getOperand(1);
       src = ins.getOperand(0);
-      // delete acp entry if it is invalidated
-      if (acp.find(dest) != acp.end()) {
-        acp.erase(dest);
-      } else if (acp.find(src) != acp.end()) {
+      if (acp.find(src) != acp.end()) {
         acp[dest] = acp[src];
         // replace source with acp[src]
         ins.setOperand(0, acp[src]);
