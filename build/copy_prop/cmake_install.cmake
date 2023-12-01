@@ -1,4 +1,4 @@
-# Install script for directory: /home/zavier/Documents/school/fa23/cosc461/assignments/cpass/copy_prop
+# Install script for directory: /home/zmille10/Documents/cs461/cpass/copy_prop
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
