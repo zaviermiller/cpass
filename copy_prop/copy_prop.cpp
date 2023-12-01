@@ -450,36 +450,6 @@ loop:
     initial = false;
     goto loop;
   }
-
-
-  // do {
-  //   changed = false;
-  //   for (auto BB = RPOT.begin(); BB != RPOT.end(); BB++) {
-  //     bb = *BB;
-  //     BasicBlockInfo *bbi = bb_info[bb];
-  //     BitVector cpout_copy(bbi->CPOut);
-  //     BitVector cpin_copy(bbi->CPIn);
-  //     for (BasicBlock *pred : predecessors(bb)) {
-  //       BasicBlockInfo *pbbi = bb_info[pred];
-  //       for (int i = 0; i < pbbi->CPOut.size(); i++) {
-  //         bbi->CPIn[i] = bbi->CPIn[i] & pbbi->CPOut[i];
-  //       }
-  //     }
-
-  //     if (bbi->CPIn != cpin_copy) {
-  //       changed = true;
-  //     }
-
-  //     // compute cpout
-  //     for (int i = 0; i < bbi->CPOut.size(); i++) {
-  //       bbi->CPOut[i] = bbi->COPY[i] | (bbi->CPIn[i] & (~bbi->KILL[i]));
-  //     }
-
-  //     if (bbi->CPOut != cpout_copy) {
-  //       changed = true;
-  //     }
-  //   }
-  // } while(changed);
 }
 
 
@@ -495,15 +465,20 @@ loop:
  * this block.
  */
 void DataFlowAnalysis::initACPs() {
+  BasicBlock *bb;
+  BasicBlockInfo *bbi;
+  Instruction *ins;
+  Value *src, *dest;
+
   for (auto it = bb_info.begin(); it != bb_info.end(); it++) {
-    BasicBlock *bb = it->first;
-    BasicBlockInfo *bbi = it->second;
+    bb = it->first;
+    bbi = it->second;
 
     for (int i = 0; i < nr_copies; i++) {
       if (bbi->CPIn[i]) {
-        Instruction *ins = (Instruction *)idx_copy[i];
-        Value *src = ins->getOperand(0);
-        Value *dest = ins->getOperand(1);
+        ins = (Instruction *)idx_copy[i];
+        src = ins->getOperand(0);
+        dest = ins->getOperand(1);
 
         bbi->ACP[dest] = src;
       }
